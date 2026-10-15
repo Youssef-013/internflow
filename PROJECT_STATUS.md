@@ -1,38 +1,28 @@
 # InternFlow — état du projet
 
-## État au 13 octobre 2026
-- Dépôt vérifié : Youssef-013/internflow, public, initialement vide.
-- Compte GitHub connecté : Youssef-013 ; droits admin et push.
-- Réalisé : cadrage de l'architecture et des sept jalons ; aucun code applicatif.
-- Architecture : monorepo npm, apps/web (React TypeScript), apps/api (NestJS), PostgreSQL et Prisma.
-- Domaine initial : candidatures de stage privées par utilisateur (entreprise, poste, statut, dates, notes).
-- Sécurité : mots de passe hachés, JWT à durée limitée, validation DTO, isolation par propriétaire, secrets hors Git.
-- Tests applicatifs : non exécutés, application pas encore créée.
+## État au 15 octobre 2026
+Jalon 1 validé : monorepo React TypeScript/Vite et NestJS, accueil avec vérification API, endpoints de santé, service Prisma, schéma User/Application, migration initiale et PostgreSQL local. JWT/CRUD/dashboard/Kanban restent à développer.
+
+## Vérifications réussies
+- Dans le terminal utilisateur : npm ci, génération Prisma 6.12.0, migration PostgreSQL, validation du schéma, types et builds API/web.
+- 8 tests réussis : 3 HTTP API, 4 React, 1 intégration réelle PostgreSQL (relations, unicité, cascade).
+- Dans cette conversation : démarrage NestJS avec Prisma réel ; /api/health et /api/health/ready répondent 200, base connectée.
+- Audit du lockfile sans vulnérabilité signalée le 14 octobre. Vitest 5.0.4 ; versions verrouillées à conserver.
+- Livraison du socle : consulter l'historique Git. Ne pas refaire les installations, migrations ou contrôles réussis sans modification les justifiant.
+
+## Prochaine tâche
+JWT : inscription avec mot de passe haché, connexion, configuration secrète hors Git, expiration des jetons, protection des routes et tests. Puis CRUD des candidatures limitées au propriétaire. Réutiliser le service Prisma, les pipes de validation et les tests existants.
+
+## Environnement et limites
+- PostgreSQL sain sur 127.0.0.1:15432 (5432 refusé par Windows). .env local ignoré, mot de passe préservé ; Compose et exemple alignés sur 15432. Ne pas supprimer le volume.
+- Le terminal normal de l'utilisateur a débloqué installation, génération Prisma et Docker. L'API Docker et le gestionnaire d'identifiants Git restent restreints dans cette conversation ; publier via le connecteur GitHub au besoin.
+- Les permissions temporaires ne garantissent pas l'autonomie des prochaines sessions. Ne pas répéter une opération bloquée si rien n'a changé ; demander uniquement l'intervention indispensable.
+- Déploiement externe : cible et accès encore nécessaires.
 
 ## Planning — Africa/Casablanca, 22h00
-| Date 2026 | Jalon |
-| --- | --- |
-| 14 octobre | Initialiser React TS et NestJS, PostgreSQL local, Prisma, scripts de vérification et test de démarrage. |
-| 15 octobre | Inscription/connexion JWT, protection des routes et tests d'authentification. |
-| 16 octobre | CRUD des candidatures, DTO, isolation des utilisateurs et tests API. |
-| 17 octobre | Interface CRUD connectée, formulaires, erreurs et états de chargement. |
-| 18 octobre | Dashboard et Kanban avec persistance des statuts et tests ciblés. |
-| 19 octobre | Tests d'intégration, GitHub Actions et préparation du déploiement. |
-| 20 octobre | Vérifications globales, corrections, documentation et livraison. |
+Jalon du 14 terminé le 15 : socle. Le 15 : JWT ; 16 : CRUD privé/tests API ; 17 : interface CRUD ; 18 : dashboard/Kanban ; 19 : intégration/CI/CD ; 20 : vérifications globales/documentation/livraison. Adapter au réalisé ; environ 3 commits cohérents/session et 21 au total, sans quota artificiel.
 
-Objectif : environ 3 commits cohérents par session, environ 21 au total, sans quota artificiel.
+## Règles de continuité
+Lire ce fichier, le dernier état Git et les seuls fichiers nécessaires. Travailler par lots, réutiliser, tests ciblés puis vérifications globales aux jalons ; aucune dépendance, recherche ou refactorisation inutile, ni sous-agent. Secrets hors Git, validation DTO et isolation propriétaire. Ne pas écraser les changements humains, forcer un push, pousser du code non vérifié ou créer des commits cosmétiques. Mettre cet état à jour avec les commits fonctionnels. Checkout work/internflow ; si Git refuse le propriétaire, utiliser -c safe.directory limité au chemin absolu exact, sans changer la confiance globale.
 
-## Prochaine tâche — premier jalon
-Créer les deux applications et la base locale, établir le schéma Prisma User/Application et vérifier types, builds et démarrage. Regrouper en lots : structure et scripts ; base et Prisma ; test de démarrage et documentation. Adapter au travail déjà réalisé.
-
-## Règles de session
-Lire uniquement ce fichier, le dernier état Git et les fichiers concernés ; réutiliser le code ; ne pas refaire une opération réussie. Modifications par lots, tests ciblés, vérifications globales aux jalons. Dépendances nécessaires uniquement, pas de refactorisation ou recherche sans besoin. Maintenir cet état concis dans les commits fonctionnels. Messages de commit courts ; aucun push de code échouant aux contrôles essentiels. Ne pas exposer de secrets, écraser des changements humains ni forcer un push.
-
-## Blocages et limites
-- Écriture GitHub et exécution planifiée à confirmer par les opérations réelles ; les droits du compte ne prouvent pas toutes les permissions du connecteur.
-- Accès réseau du terminal restreint ; installation des dépendances et publication Git du terminal non vérifiés.
-- Autonomie complète non garantie ; les sessions utilisent leurs permissions effectives et signalent tout blocage réel.
-- Déploiement externe en attente d'une cible et d'identifiants ; ne pas inventer un déploiement réussi.
-
-## Rapport de session
-Fonctionnalités réalisées ; commits créés et poussés ; résultat des tests ; prochaine étape ; blocages éventuels.
+Rapport : fonctionnalités ; commits créés/poussés ; tests ; prochaine étape ; blocages éventuels.
