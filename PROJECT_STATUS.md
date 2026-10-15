@@ -11,7 +11,7 @@ Jalon 1 validé : monorepo React TypeScript/Vite et NestJS, accueil avec vérifi
 - Livraison du socle : consulter l'historique Git. Ne pas refaire les installations, migrations ou contrôles réussis sans modification les justifiant.
 
 ## Prochaine tâche
-JWT : inscription avec mot de passe haché, connexion, configuration secrète hors Git, expiration des jetons, protection des routes et tests. Puis CRUD des candidatures limitées au propriétaire. Réutiliser le service Prisma, les pipes de validation et les tests existants.
+Le 16 octobre 2026 à 22h00 : JWT — inscription avec mot de passe haché, connexion, configuration secrète hors Git, expiration des jetons, protection des routes et tests. Puis CRUD des candidatures limitées au propriétaire. Réutiliser le service Prisma, les pipes de validation et les tests existants. Le socle est déjà terminé et publié ; aucun nouveau développement prévu le 15 octobre.
 
 ## Environnement et limites
 - PostgreSQL sain sur 127.0.0.1:15432 (5432 refusé par Windows). .env local ignoré, mot de passe préservé ; Compose et exemple alignés sur 15432. Ne pas supprimer le volume.
@@ -20,7 +20,17 @@ JWT : inscription avec mot de passe haché, connexion, configuration secrète ho
 - Déploiement externe : cible et accès encore nécessaires.
 
 ## Planning — Africa/Casablanca, 22h00
-Jalon du 14 terminé le 15 : socle. Le 15 : JWT ; 16 : CRUD privé/tests API ; 17 : interface CRUD ; 18 : dashboard/Kanban ; 19 : intégration/CI/CD ; 20 : vérifications globales/documentation/livraison. Adapter au réalisé ; environ 3 commits cohérents/session et 21 au total, sans quota artificiel.
+| Date 2026 | Jalon |
+| --- | --- |
+| 15 octobre | Initialiser React TS et NestJS, PostgreSQL local, Prisma, scripts de vérification et test de démarrage — terminé et publié. |
+| 16 octobre | Inscription/connexion JWT, protection des routes et tests d'authentification. |
+| 17 octobre | CRUD des candidatures, DTO, isolation des utilisateurs et tests API. |
+| 18 octobre | Interface CRUD connectée, formulaires, erreurs et états de chargement. |
+| 19 octobre | Dashboard et Kanban avec persistance des statuts et tests ciblés. |
+| 20 octobre | Tests d'intégration, GitHub Actions et préparation du déploiement. |
+| 21 octobre | Vérifications globales, corrections, documentation et livraison. |
+
+Planning confirmé par l'utilisateur : suivre ce tableau, JWT le 16 et fin le 21. Prochaines sessions du 16 au 21 à 22h00, sans refaire le jalon terminé le 15. Environ 3 commits cohérents/session et 21 au total, sans quota artificiel.
 
 ## Règles de continuité
 Lire ce fichier, le dernier état Git et les seuls fichiers nécessaires. Travailler par lots, réutiliser, tests ciblés puis vérifications globales aux jalons ; aucune dépendance, recherche ou refactorisation inutile, ni sous-agent. Secrets hors Git, validation DTO et isolation propriétaire. Ne pas écraser les changements humains, forcer un push, pousser du code non vérifié ou créer des commits cosmétiques. Mettre cet état à jour avec les commits fonctionnels. Checkout work/internflow ; si Git refuse le propriétaire, utiliser -c safe.directory limité au chemin absolu exact, sans changer la confiance globale.
