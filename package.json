@@ -1,0 +1,25 @@
+{
+  "name": "internflow",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22.14.0 <23 || >=24.0.0"
+  },
+  "scripts": {
+    "dev:web": "npm run dev -w @internflow/web",
+    "dev:api": "npm run dev -w @internflow/api",
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "test": "npm run test --workspaces",
+    "check": "npm run db:validate && npm run typecheck && npm run build && npm test",
+    "db:generate": "node --env-file=.env scripts/prisma.mjs generate",
+    "db:validate": "node --env-file=.env scripts/prisma.mjs validate",
+    "db:migrate": "node --env-file=.env scripts/prisma.mjs migrate deploy",
+    "db:up": "docker compose up -d --wait db",
+    "db:down": "docker compose down",
+    "test:db": "node --env-file=.env --test apps/api/test/database.integration.cjs"
+  }
+}
