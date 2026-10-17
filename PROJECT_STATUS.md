@@ -7,11 +7,11 @@
 - Livraison JWT en trois lots : services de sécurité/dépendances ; routes et protection globale ; tests/documentation. Consulter l'historique distant pour les identifiants. Ne pas refaire JWT.
 
 ## Vérifications réussies — 17 octobre
-Dans le terminal utilisateur : npm run check (schéma Prisma, types et builds API/web, 13 tests API dont 10 d'authentification, 4 React) puis npm run test:db (2 tests PostgreSQL réel). Total : 19 tests réussis. Le parcours réel inscription, doublon, connexion, profil protégé et suppression de compte passe. Aucun nouveau changement fonctionnel depuis ces vérifications ; ne pas les répéter sans motif.
+Dans le terminal utilisateur : npm run check (schéma Prisma, types et builds API/web, 20 tests API (10 authentification, 7 CRUD, 3 santé), 4 React) puis npm run test:db (3 tests PostgreSQL réel). Total : 27 tests réussis. Les parcours réels JWT, CRUD, isolation entre deux comptes et relations/cascade passent. Aucun nouveau changement fonctionnel depuis ces vérifications ; ne pas les répéter sans motif.
 Dépendances installées : jsonwebtoken 9.0.3 et @types/jsonwebtoken 9.0.10, lockfile actualisé ; Prisma 6.12.0 et Vitest 5.0.4 conservés. L'audit historique du 14 octobre précède les dépendances JWT ; ne pas le présenter comme un nouvel audit.
 
 ## Prochaine tâche
-CRUD des candidatures : DTO et endpoints limités au propriétaire, tests API incluant les tentatives d'accès entre utilisateurs. Réutiliser PrismaService, CredentialsDto si pertinent, AuthRequest.user et la garde globale existante. Toute nouvelle route est protégée par défaut ; seuls inscription, connexion et santé sont publics.
+Le 18 octobre à 22h00 : interface CRUD React connectée à l’API, formulaires, gestion du JWT, états de chargement et erreurs, tests ciblés. Réutiliser les endpoints et validations documentés dans README.md. Le jalon CRUD du 17 a été effectué manuellement et validé : aucun nouveau développement ni répétition du CRUD le 17 à 22h00 ; attendre le jalon du 18 sauf nouvelle demande explicite.
 
 ## Environnement et limites
 - PostgreSQL sain après redémarrage Docker sur 127.0.0.1:15432 ; 5432 refusé par Windows. Ne pas supprimer le volume ni modifier le mot de passe existant.
@@ -25,7 +25,7 @@ CRUD des candidatures : DTO et endpoints limités au propriétaire, tests API in
 | --- | --- |
 | 15 octobre | Socle React TS/NestJS/PostgreSQL/Prisma — terminé et publié. |
 | 16 octobre | Inscription/connexion JWT, protection et tests — terminé le 17 octobre. |
-| 17 octobre | CRUD des candidatures, DTO, isolation utilisateur et tests API. |
+| 17 octobre | CRUD des candidatures, DTO, isolation utilisateur et tests API — terminé. |
 | 18 octobre | Interface CRUD connectée, formulaires, erreurs et chargement. |
 | 19 octobre | Dashboard et Kanban, persistance et tests ciblés. |
 | 20 octobre | Tests d'intégration, GitHub Actions et préparation du déploiement. |

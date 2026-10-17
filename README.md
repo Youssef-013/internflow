@@ -4,7 +4,7 @@ Suivi personnel des candidatures de stage. Monorepo React TypeScript / NestJS / 
 
 ## État
 
-Socle applicatif, page d'accueil et endpoints de santé disponibles. Authentification JWT validée ; CRUD, dashboard et Kanban planifiés : voir [PROJECT_STATUS.md](PROJECT_STATUS.md).
+Socle applicatif, page d'accueil et endpoints de santé disponibles. Authentification JWT validée ; API CRUD des candidatures validée. Interface CRUD, dashboard et Kanban planifiés : voir [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## Démarrage local
 
@@ -61,3 +61,23 @@ Les builds web statiques exigent un reverse proxy `/api` en production. Aucun h�
 - Aucun refresh token n'est fourni dans ce jalon. Une déconnexion côté client efface son jeton ; les jetons déjà émis restent valides jusqu'à expiration. Conserver les jetons en mémoire côté navigateur ; utiliser HTTPS pour un déploiement externe.
 
 Les tests HTTP d'authentification utilisent un substitut de persistance ; `npm run test:db` inclut aussi le parcours inscription/connexion/profil sur PostgreSQL réel avec nettoyage de ses seules données temporaires.
+
+## Candidatures
+
+Toutes les routes `/api/applications` exigent `Authorization: Bearer <accessToken>`. Le propriétaire vient du compte authentifié ; `userId`, `id`, `createdAt` et `updatedAt` ne sont jamais acceptés dans un corps JSON.
+
+| Méthode | Route | Résultat |
+| --- | --- | --- |
+| POST | `/api/applications` | Crée une candidature, HTTP 201. |
+| GET | `/api/applications` | Liste uniquement les candidatures du compte, avec pagination et filtre de statut. |
+| GET | `/api/applications/:id` | Consulte une candidature du compte. |
+| PATCH | `/api/applications/:id` | Modifie les champs fournis, HTTP 200. |
+| DELETE | `/api/applications/:id` | Supprime une candidature du compte, HTTP 204 sans corps. |
+
+Création : `company` et `position` obligatoires (1 à 200 caractères après suppression des espaces aux extrémités). Champs facultatifs : `status` (`DRAFT` par défaut, `APPLIED`, `INTERVIEW`, `OFFER`, `REJECTED`), `appliedAt` et `deadline` (dates ISO 8601), `notes` (10 000 caractères maximum). Dates et notes peuvent être effacées avec `null` ; entreprise, poste et statut ne peuvent pas être nuls. Un PATCH vide et les champs inconnus sont refusés (HTTP 400).
+
+Exemple de liste : `/api/applications?status=APPLIED&page=1&pageSize=20`. Réponse : `{ "items": [], "total": 0, "page": 1, "pageSize": 20 }`. Taille maximale 100 ; tri par date de création décroissante puis identifiant pour un ordre stable. Le total porte uniquement sur le compte et le filtre demandés.
+
+Une candidature absente ou appartenant à un autre compte retourne le même HTTP 404, y compris lors d'une modification ou suppression. Les écritures vérifient le propriétaire dans leur opération SQL. Les réponses privées portent `Cache-Control: no-store`. Le modèle existant suffit : aucune migration supplémentaire pour ce jalon.
+
+Les tests HTTP CRUD utilisent un substitut de persistance ; `npm run test:db` vérifie aussi le CRUD réel et les tentatives d'accès entre deux comptes PostgreSQL temporaires, nettoyés en fin de test.
