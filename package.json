@@ -20,6 +20,6 @@
     "db:migrate": "node --env-file=.env scripts/prisma.mjs migrate deploy",
     "db:up": "docker compose up -d --wait db",
     "db:down": "docker compose down",
-    "test:db": "node --env-file=.env --test apps/api/test/database.integration.cjs"
+    "test:db": "node --env-file=.env --test apps/api/test/database.integration.cjs apps/api/test/auth.integration.cjs"
   }
 }
