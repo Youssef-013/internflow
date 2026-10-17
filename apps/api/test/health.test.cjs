@@ -1,4 +1,5 @@
 require('reflect-metadata');
+process.env.JWT_SECRET ??= 'health-test-secret-not-for-production-123456789';
 const { test, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const { Test } = require('@nestjs/testing');
