@@ -81,6 +81,7 @@ export const api = {
     return request(`/applications?${query}`, { token, signal }, page);
   },
   get: (token: string, id: string, signal: AbortSignal) => request(`/applications/${encodeURIComponent(id)}`, { token, signal }, application),
+  move: (token: string, id: string, status: ApplicationStatus, signal: AbortSignal) => request(`/applications/${encodeURIComponent(id)}`, { token, signal, method: 'PATCH', body: { status } }, application),
   save: (token: string, input: ApplicationInput, signal: AbortSignal, id?: string) => request(id ? `/applications/${encodeURIComponent(id)}` : '/applications', { token, signal, method: id ? 'PATCH' : 'POST', body: input }, application),
   remove: (token: string, id: string, signal: AbortSignal) => request(`/applications/${encodeURIComponent(id)}`, { token, signal, method: 'DELETE' }, value => { if (value !== undefined) throw invalid(); }),
 };
