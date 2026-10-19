@@ -1,37 +1,36 @@
 # InternFlow — état du projet
 
-## État au 17 octobre 2026
-- Socle terminé : React TypeScript/Vite, NestJS, Prisma et PostgreSQL, endpoints de santé et page d'accueil.
-- JWT terminé et validé : inscription/connexion, hachage scrypt salé, jetons HS256 de 15 minutes, protection globale des routes et GET /api/auth/me. Les comptes supprimés perdent l'accès immédiatement.
-- Sécurité : DTO stricts et email normalisé, erreurs de connexion génériques, aucun hash retourné, limitation des tentatives et du hachage simultané, Cache-Control no-store. JWT_SECRET privé dans .env ignoré ; jamais le publier.
-- Livraison JWT en trois lots : services de sécurité/dépendances ; routes et protection globale ; tests/documentation. Consulter l'historique distant pour les identifiants. Ne pas refaire JWT.
+## Terminé — jalon interface du 18 octobre 2026
+- Socle React TypeScript/Vite, NestJS, PostgreSQL/Prisma et endpoints de santé livrés.
+- JWT livré : inscription/connexion, scrypt, jetons HS256 de 15 minutes, protection globale, profil et limitation des tentatives. Secrets uniquement dans .env ignoré.
+- API CRUD livrée : DTO stricts, propriétaire authentifié, filtres/pagination, isolation et mutations atomiques.
+- Interface connectée : inscription/connexion, liste filtrée et paginée, détail, création/modification, suppression confirmée, validation, chargement et erreurs réessayables. JWT en mémoire uniquement ; déconnexion, expiration et HTTP 401 effacent les données privées. Requêtes abandonnées et réponses tardives ignorées.
 
-## Vérifications réussies — 17 octobre
-Dans le terminal utilisateur : npm run check (schéma Prisma, types et builds API/web, 20 tests API (10 authentification, 7 CRUD, 3 santé), 4 React) puis npm run test:db (3 tests PostgreSQL réel). Total : 27 tests réussis. Les parcours réels JWT, CRUD, isolation entre deux comptes et relations/cascade passent. Aucun nouveau changement fonctionnel depuis ces vérifications ; ne pas les répéter sans motif.
-Dépendances installées : jsonwebtoken 9.0.3 et @types/jsonwebtoken 9.0.10, lockfile actualisé ; Prisma 6.12.0 et Vitest 5.0.4 conservés. L'audit historique du 14 octobre précède les dépendances JWT ; ne pas le présenter comme un nouvel audit.
+## Vérifications
+- API inchangée : le 17 octobre, npm run check et npm run test:db ont validé schéma, types/builds, 20 tests API et 3 tests PostgreSQL réel dans le terminal utilisateur.
+- Interface : types et build web réussis ; 17 tests React réussis ici (authentification, CRUD, filtres/pagination, erreurs, annulation et expiration). Ces tests simulent fetch ; pas de nouveau parcours navigateur/API réel validé.
+- Aucune nouvelle dépendance ni migration. Aperçu navigateur local inaccessible (timeout) ; vérification visuelle restant à effectuer.
 
 ## Prochaine tâche
-Le 18 octobre à 22h00 : interface CRUD React connectée à l’API, formulaires, gestion du JWT, états de chargement et erreurs, tests ciblés. Réutiliser les endpoints et validations documentés dans README.md. Le jalon CRUD du 17 a été effectué manuellement et validé : aucun nouveau développement ni répétition du CRUD le 17 à 22h00 ; attendre le jalon du 18 sauf nouvelle demande explicite.
+19 octobre à 22h00, Africa/Casablanca : dashboard et Kanban avec persistance des statuts et tests ciblés. Réutiliser api.ts, les composants et les endpoints existants. Ne pas refaire JWT/CRUD/interface.
 
-## Environnement et limites
-- PostgreSQL sain après redémarrage Docker sur 127.0.0.1:15432 ; 5432 refusé par Windows. Ne pas supprimer le volume ni modifier le mot de passe existant.
-- Ici : connexions réseau, y compris HTTP local, parfois refusées (EACCES), API Docker et identifiants Git restreints. Le terminal normal de l'utilisateur a validé les tests ; ne pas attribuer à un bug les refus d'accès déjà diagnostiqués. Utiliser le connecteur GitHub pour publier au besoin.
-- Les autorisations d'écriture/réseau ne sont pas garanties pour les prochaines sessions. Aucun contournement ; intervention humaine uniquement si indispensable.
-- Avant reprise, comparer HEAD local et distant : publication par connecteur possible alors que le réseau du terminal empêche la synchronisation Git locale. Préserver tous les fichiers et ne pas recréer les commits déjà distants. Ancienne base locale avant JWT : df964da.
-- Déploiement externe : cible et identifiants toujours nécessaires. La limitation des tentatives est en mémoire par processus ; prévoir une limite partagée avant un déploiement multi-instance. Aucun refresh token dans ce jalon.
+## Problèmes et environnement
+- PostgreSQL : 127.0.0.1:15432 ; garder Docker lancé, ne pas supprimer le volume ni changer les identifiants.
+- Terminal restreint : réseau/HTTP local parfois refusés, Docker et Git natif limités. Publication par connecteur GitHub ; comparer le distant avant toute reprise. HEAD local ancien df964da : ne pas recréer les commits distants ; préserver les fichiers humains.
+- Les autorisations temporaires ne garantissent pas les sessions suivantes. Aucun contournement ; demander une intervention seulement en cas de blocage réel.
+- Déploiement : cible et accès nécessaires. Limitation auth en mémoire par processus ; prévoir une limite partagée avant plusieurs instances. Pas de refresh token ; rechargement de page = reconnexion.
 
 ## Planning — Africa/Casablanca, 22h00
 | Date 2026 | Jalon |
 | --- | --- |
-| 15 octobre | Socle React TS/NestJS/PostgreSQL/Prisma — terminé et publié. |
-| 16 octobre | Inscription/connexion JWT, protection et tests — terminé le 17 octobre. |
-| 17 octobre | CRUD des candidatures, DTO, isolation utilisateur et tests API — terminé. |
-| 18 octobre | Interface CRUD connectée, formulaires, erreurs et chargement. |
-| 19 octobre | Dashboard et Kanban, persistance et tests ciblés. |
-| 20 octobre | Tests d'intégration, GitHub Actions et préparation du déploiement. |
+| 15 octobre | Socle — terminé et publié. |
+| 16 octobre | JWT — terminé le 17. |
+| 17 octobre | API CRUD — terminé et publié. |
+| 18 octobre | Interface CRUD connectée — terminée, tests réussis. |
+| 19 octobre | Dashboard/Kanban persistants et tests ciblés. |
+| 20 octobre | Intégration, GitHub Actions et préparation du déploiement. |
 | 21 octobre | Vérifications globales, corrections, documentation et livraison. |
-Adapter au réalisé ; environ 3 commits cohérents/session et 21 au total, sans quota artificiel. Conserver les sessions à 22h00, heure du Maroc, jusqu'au 21 octobre.
 
 ## Continuité
-Lire ce fichier, l'état Git et les seuls fichiers concernés. Travail par lots, réutilisation, tests ciblés puis contrôles globaux aux jalons. Pas de dépendance, recherche, refactorisation ou sous-agent inutile. Préserver les changements humains et les secrets. Pas de force push, commit cosmétique ou publication de code non vérifié. Mettre cet état à jour dans les commits fonctionnels. Checkout work/internflow ; si nécessaire, safe.directory ponctuel limité au chemin absolu exact, sans changer la confiance globale.
+Lire cet état, le dernier état Git et les seuls fichiers concernés. Travail par lots ; tests ciblés puis contrôles globaux aux jalons. Aucun sous-agent, dépendance ou refactoring inutile. Environ 3 commits/session et 21 au total sans quota artificiel. Publier seulement après vérifications essentielles, confirmer le SHA distant, sans force push. Aucun travail après le 21 octobre.
 Rapport : fonctionnalités ; commits créés/poussés ; tests ; prochaine étape ; blocages éventuels.

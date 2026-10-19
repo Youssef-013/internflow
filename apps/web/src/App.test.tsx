@@ -22,5 +22,5 @@ it.each([
   render(<App />);
   fireEvent.click(screen.getByRole('button', { name: /Vérifier la connexion/ }));
   await screen.findByText(/API indisponible/);
-  expect(screen.getByRole<HTMLButtonElement>('button').disabled).toBe(false);
+  expect(screen.getByRole<HTMLButtonElement>('button', { name: /Vérifier la connexion/ }).disabled).toBe(false);
 });
