@@ -4,7 +4,7 @@ Suivi personnel des candidatures de stage. Monorepo React TypeScript / NestJS / 
 
 ## État
 
-Socle applicatif, page d'accueil et endpoints de santé disponibles. Authentification JWT validée ; API CRUD des candidatures validée. Interface CRUD connectée disponible ; dashboard et Kanban planifiés : voir [PROJECT_STATUS.md](PROJECT_STATUS.md).
+Socle applicatif, page d'accueil et endpoints de santé disponibles. Authentification JWT validée ; API CRUD des candidatures validée. Interface CRUD, dashboard et Kanban connectés disponibles : voir [PROJECT_STATUS.md](PROJECT_STATUS.md).
 
 ## Démarrage local
 
@@ -89,3 +89,10 @@ L’accueil permet de créer un compte ou de se connecter. L’espace personnel 
 Le JWT reste uniquement en mémoire : un rechargement impose une reconnexion. La déconnexion, l’expiration et une réponse HTTP 401 ferment la session et effacent l’affichage privé. Les requêtes abandonnées et les réponses tardives ne rétablissent pas les données d’une ancienne session. Les erreurs réseau/serveur permettent de réessayer ; les requêtes ont un délai de 10 secondes.
 
 Vérifications ciblées : `npm run typecheck -w @internflow/web`, `npm run build -w @internflow/web`, `npm run test -w @internflow/web`. Les tests React simulent les réponses HTTP et ne remplacent pas les tests PostgreSQL ni un parcours complet navigateur/API.
+## Dashboard et Kanban
+
+Depuis l’espace personnel, choisir **Dashboard et Kanban**. Les totaux (global et par statut) viennent des comptes renvoyés par l’API pour les cinq statuts : ils incluent toutes les pages. Chaque colonne charge 20 cartes, puis propose « Charger plus ». La liste reste accessible pour consulter ou modifier les autres champs.
+
+Le sélecteur de statut d’une carte enregistre un `PATCH /api/applications/:id` contenant uniquement `status`, via les contrôles de propriétaire existants. Le tableau est rechargé après confirmation du serveur ; en cas d’échec, la carte conserve son ancien statut et une erreur est affichée. Le déplacement se fait au clavier comme à la souris via ce sélecteur. Aucun ordre manuel des cartes n’est enregistré.
+
+« Actualiser le suivi » recharge les colonnes et leurs totaux, notamment après un changement depuis un autre onglet. Les compteurs sont lus séparément et ne constituent pas un instantané transactionnel entre plusieurs clients. Aucun endpoint, dépendance ni migration supplémentaire.

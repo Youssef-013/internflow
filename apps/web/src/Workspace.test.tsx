@@ -225,3 +225,15 @@ it('ignores a late filter response and keeps the newest filter result', async ()
   expect(screen.queryByText('Stale result')).toBeNull();
   expect(within(screen.getByRole('table')).getByText('Acme')).toBeTruthy();
 });
+
+it('switches between list and Kanban and reloads persisted status when returning to the list', async () => {
+  server([item]); render(<App />); await login();
+  fireEvent.click(screen.getByRole('button', { name: 'Dashboard et Kanban' }));
+  const source = await screen.findByRole('region', { name: 'Colonne Envoyée' });
+  expect(within(source).getByText('Acme')).toBeTruthy();
+  fireEvent.change(screen.getByLabelText('Statut de Acme'), { target: { value: 'INTERVIEW' } });
+  await waitFor(() => expect(within(screen.getByRole('region', { name: 'Colonne Entretien' })).getByText('Acme')).toBeTruthy());
+  fireEvent.click(screen.getByRole('button', { name: 'Liste' }));
+  const row = await screen.findByRole('row', { name: /Acme/ });
+  expect(within(row).getByText('Entretien')).toBeTruthy();
+});
