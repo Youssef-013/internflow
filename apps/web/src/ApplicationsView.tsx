@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { api, ApiError, displayDate, errorMessage, isAborted, STATUSES, STATUS_LABELS } from './api';
 import type { Application, ApplicationInput, ApplicationPage, ApplicationStatus } from './api';
 import { ApplicationForm } from './ApplicationForm';
+import { ProgressBoard } from './ProgressBoard';
 
 function Details({ token, id, onClose, onEdit, onExpired }: { token: string; id: string; onClose: () => void; onEdit: (item: Application) => void; onExpired: () => void }) {
   const [item, setItem] = useState<Application | null>(null);
@@ -27,6 +28,7 @@ function Details({ token, id, onClose, onEdit, onExpired }: { token: string; id:
 }
 
 export function ApplicationsView({ token, onExpired }: { token: string; onExpired: () => void }) {
+  const [view, setView] = useState<'list' | 'progress'>('list');
   const [status, setStatus] = useState<ApplicationStatus | ''>('');
   const [pageNumber, setPageNumber] = useState(1);
   const [data, setData] = useState<ApplicationPage | null>(null);
@@ -43,6 +45,7 @@ export function ApplicationsView({ token, onExpired }: { token: string; onExpire
   const deletePending = useRef(false);
   useEffect(() => () => { for (const controller of mutations.current) controller.abort(); }, []);
   useEffect(() => {
+    if (view !== 'list') return;
     const controller = new AbortController(); setLoading(true); setError(''); setData(null);
     api.list(token, status, pageNumber, controller.signal).then(value => {
       if (controller.signal.aborted) return;
@@ -53,7 +56,7 @@ export function ApplicationsView({ token, onExpired }: { token: string; onExpire
       if (failure instanceof ApiError && failure.status === 401) onExpired(); else setError(errorMessage(failure));
     }).finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();
-  }, [token, status, pageNumber, refresh, onExpired]);
+  }, [token, status, pageNumber, refresh, onExpired, view]);
 
   async function save(input: ApplicationInput) {
     const controller = new AbortController(); mutations.current.add(controller);
@@ -85,7 +88,9 @@ export function ApplicationsView({ token, onExpired }: { token: string; onExpire
   const locked = !!form || !!deleting;
   const edit = (item: Application) => { setForm({ initial: item }); setDetail(null); setNotice(''); };
   return <>
-    <div className="workspace-heading"><div><p className="eyebrow">VOTRE PROCHAIN CHAPITRE</p><h1>Mes candidatures<span className="brand-dot">.</span></h1><p className="muted">Chaque démarche compte. Gardez une vue claire de la suite.</p></div><button disabled={locked} onClick={() => { setForm({}); setDetail(null); setNotice(''); }}>+ Nouvelle candidature</button></div>
+    <div className="workspace-heading"><div><p className="eyebrow">VOTRE PROCHAIN CHAPITRE</p><h1>Mes candidatures<span className="brand-dot">.</span></h1><p className="muted">Chaque démarche compte. Gardez une vue claire de la suite.</p></div><button disabled={locked} onClick={() => { setView('list'); setForm({}); setDetail(null); setNotice(''); }}>+ Nouvelle candidature</button></div>
+    <nav className="view-switch" aria-label="Vues des candidatures"><button className={view === 'list' ? 'selected' : 'secondary'} aria-pressed={view === 'list'} disabled={locked} onClick={() => { setView('list'); setDetail(null); }}>Liste</button><button className={view === 'progress' ? 'selected' : 'secondary'} aria-pressed={view === 'progress'} disabled={locked} onClick={() => { setView('progress'); setDetail(null); setNotice(''); }}>Dashboard et Kanban</button></nav>
+    {view === 'progress' ? <ProgressBoard token={token} onExpired={onExpired} /> : <>
     {notice && <p role="status" className="success-message">{notice}</p>}
     {form && <ApplicationForm key={form.initial?.id ?? 'new'} initial={form.initial} onSave={save} onCancel={() => setForm(null)} />}
     {detail && !locked && <Details key={detail} token={token} id={detail} onClose={() => setDetail(null)} onEdit={edit} onExpired={onExpired} />}
@@ -97,5 +102,6 @@ export function ApplicationsView({ token, onExpired }: { token: string; onExpire
         <nav className="pagination" aria-label="Pages des candidatures"><button className="secondary" disabled={locked || pageNumber <= 1} onClick={() => { setPageNumber(value => value - 1); setDetail(null); }}>Précédent</button><span>Page {pageNumber} sur {Math.max(1, Math.ceil(data.total / data.pageSize))}</span><button className="secondary" disabled={locked || pageNumber * data.pageSize >= data.total} onClick={() => { setPageNumber(value => value + 1); setDetail(null); }}>Suivant</button></nav>
       </>}
     </section>
+    </>}
   </>;
 }
