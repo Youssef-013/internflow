@@ -96,3 +96,10 @@ Depuis l’espace personnel, choisir **Dashboard et Kanban**. Les totaux (global
 Le sélecteur de statut d’une carte enregistre un `PATCH /api/applications/:id` contenant uniquement `status`, via les contrôles de propriétaire existants. Le tableau est rechargé après confirmation du serveur ; en cas d’échec, la carte conserve son ancien statut et une erreur est affichée. Le déplacement se fait au clavier comme à la souris via ce sélecteur. Aucun ordre manuel des cartes n’est enregistré.
 
 « Actualiser le suivi » recharge les colonnes et leurs totaux, notamment après un changement depuis un autre onglet. Les compteurs sont lus séparément et ne constituent pas un instantané transactionnel entre plusieurs clients. Aucun endpoint, dépendance ni migration supplémentaire.
+## Intégration et CI
+
+Le workflow [CI](.github/workflows/ci.yml) s’exécute sur les PR et les pushs vers main, avec lancement manuel possible. Il installe le lockfile, génère Prisma, applique les migrations sur PostgreSQL 17 isolé, puis lance `npm run check` et `npm run test:db`. Le build web n’est archivé qu’après réussite de tous les contrôles ; aucune donnée ni variable de production n’est requise.
+
+Le test `journey.integration.cjs` ajoute un parcours JWT → CRUD → pagination multi-pages → changement de statut → compteurs Kanban → reconnexion, avec vérification de l’isolation entre deux comptes et nettoyage des données temporaires. Il exige une base de test migrée et le build API.
+
+La [préparation du déploiement](docs/DEPLOYMENT.md) décrit les variables, HTTPS/proxy, migrations, contrôles de santé et retour arrière. La livraison vers un hébergeur attend le choix d’une cible et les accès correspondants.
