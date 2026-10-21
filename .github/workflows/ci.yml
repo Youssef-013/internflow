@@ -1,0 +1,55 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: internflow_ci
+          POSTGRES_PASSWORD: isolated_ci_password
+          POSTGRES_DB: internflow_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U internflow_ci -d internflow_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://internflow_ci:isolated_ci_password@127.0.0.1:5432/internflow_test?schema=public&connect_timeout=3
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22.14.0'
+          cache: npm
+      - name: Prepare isolated test environment
+        run: |
+          node -e "const fs=require('node:fs'); fs.writeFileSync('.env',''); fs.appendFileSync(process.env.GITHUB_ENV, 'JWT_SECRET='+require('node:crypto').randomBytes(48).toString('base64url')+'\n');"
+      - run: npm ci
+      - run: npm run db:generate
+      - run: npm run db:migrate
+      - run: npm run check
+      - run: npm run test:db
+      - name: Save verified web build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: internflow-web-${{ github.sha }}
+          path: apps/web/dist/
+          if-no-files-found: error
+          retention-days: 7
