@@ -1,43 +1,26 @@
 # InternFlow — état du projet
 
-## État — intégration du 20 octobre 2026
-- Socle React TS/Vite, NestJS, PostgreSQL/Prisma, santé ; JWT, scrypt et protection globale ; API CRUD avec DTO stricts, propriétaire authentifié et mutations atomiques.
-- Interface : inscription/connexion, liste filtrée/paginée, détail, formulaires et suppression confirmée. JWT en mémoire ; déconnexion, expiration et HTTP 401 ferment la session. Réponses tardives ignorées.
-- Dashboard/Kanban : totaux globaux/par statut sur toutes les pages, cinq colonnes avec lots de 20, PATCH limité au statut et rechargement après confirmation. Échecs réessayables, annulation à la fermeture. Sélecteur accessible au clavier ; aucun ordre manuel ni glisser-déposer. Aucune dépendance, route API ou migration ajoutée.
+## Livraison locale — 23 octobre 2026
+- Socle React TS/NestJS/PostgreSQL/Prisma ; JWT, scrypt et protection globale ; CRUD avec DTO stricts, propriétaire authentifié et mutations atomiques : livrés.
+- Interface connectée, formulaires, filtres/pagination, détails, erreurs et suppression confirmée : livrés. JWT en mémoire, données privées retirées à la déconnexion/expiration/401.
+- Dashboard et cinq colonnes Kanban : totaux sur toutes les pages, lots de 20, PATCH du statut, rechargement après confirmation et gestion des échecs. Pas de glisser-déposer ni d’ordre manuel.
+- CI GitHub Actions et préparation du déploiement livrées. Aucun hébergeur/CD configuré.
 
-## Jalon intégration/CI validé — 21 octobre
-- Workflow GitHub Actions : PostgreSQL 17 isolé, npm ci, génération/migrations Prisma, check, tests PostgreSQL, artefact web après succès ; permissions lecture seule, actions épinglées, aucun secret de production.
-- Nouveau parcours PostgreSQL : JWT réel, pagination multi-pages, statuts/compteurs Kanban, reconnexion et isolation entre comptes ; nettoyage ciblé.
-- Préparation du déploiement dans docs/DEPLOYMENT.md. Aucun hébergeur/CD configuré sans cible ni accès.
-- Validation : YAML et syntaxe du test, schéma Prisma, types et builds API/web réussis ici ; 25 tests web réussis. Le 21 octobre, terminal utilisateur : 20 tests API et 4 tests PostgreSQL réels réussis, dont journey. Total : 49 tests. Les erreurs HTTP locales de la session restreinte ne se reproduisent pas dans le terminal utilisateur. Aucun changement fonctionnel API ni migration.
-- Première exécution GitHub Actions à confirmer après publication ; validation locale ne signifie pas CI distante réussie.
+## Vérifications confirmées
+- CI verte sur 4937672 : https://github.com/Youssef-013/internflow/actions/runs/39519638725 ; installation Linux, génération/migration Prisma, schéma/types/builds et 49 tests (20 API, 25 React, 4 PostgreSQL) réussis. Pas de changement applicatif depuis.
+- Le 23, navigateur intégré + API/PostgreSQL réels : santé, connexion, liste, formulaire/création, dashboard, déplacement Kanban, déconnexion et persistance après reconnexion vérifiés. Accueil/dashboard inspectés à 650 px ; pas de couverture visuelle exhaustive mobile/desktop. Compte temporaire et ses trois candidatures nettoyés.
+- Note complète : docs/DELIVERY.md. Procédure de déploiement : docs/DEPLOYMENT.md. Aucun nouvel audit de dépendances revendiqué.
 
-## Vérifications précédentes
-- 19 octobre : build et types web réussis ; 25 tests React réussis, dont 8 nouveaux tests dashboard/Kanban : totaux multi-pages, chargement, PATCH du statut, persistance après remontage, échecs, 401, annulation, retour à la liste.
-- Fetch simulé : aucun nouveau parcours navigateur/API/PostgreSQL réel validé. API et schéma inchangés. Le 17 octobre : schéma, types/builds, 20 tests API et 3 tests PostgreSQL réel validés dans le terminal utilisateur.
-- Aperçu navigateur local inaccessible lors de la session précédente (timeout) ; vérification visuelle restante. Aucun nouvel audit de dépendances.
+## Suite
+Jalon final repris le 23 sur demande explicite, après la fin de la période automatique du 16 au 21. Ne pas relancer les anciens jalons ni les sessions quotidiennes. Nouvelle intervention uniquement sur demande : hébergement, accès de déploiement et matrice de navigateurs/formats à définir.
 
-## Prochaine tâche
-21 octobre à 22h00, Africa/Casablanca : contrôles finaux, vérification de la CI distante, corrections justifiées et documentation de livraison. Jalon intégration du 20 validé le 21 ; ne pas le refaire. Vérification visuelle et parcours complet navigateur/API restent à effectuer.
-
-## Problèmes et environnement
-- PostgreSQL : 127.0.0.1:15432 ; garder Docker lancé, ne pas supprimer le volume ni changer les identifiants. Secrets uniquement dans .env ignoré.
-- Terminal restreint : réseau/HTTP local parfois refusés, Docker et Git natif limités. Publication par connecteur GitHub ; comparer le distant avant reprise. HEAD local ancien df964da : ne pas recréer les commits distants et préserver les fichiers humains.
-- Les autorisations temporaires ne garantissent pas les sessions suivantes. Intervention uniquement en cas de blocage réel ; aucun contournement.
-- Déploiement : cible et accès nécessaires. Limitation auth en mémoire par processus ; limite partagée nécessaire avant plusieurs instances. Pas de refresh token ; rechargement = reconnexion.
-- Les compteurs Kanban sont lus séparément : pas de snapshot transactionnel entre clients. Actualiser après un changement externe.
-
-## Planning — Africa/Casablanca, 22h00
-| Date 2026 | Jalon |
-| --- | --- |
-| 15 octobre | Socle — terminé et publié. |
-| 16 octobre | JWT — terminé le 17. |
-| 17 octobre | API CRUD — terminé et publié. |
-| 18 octobre | Interface connectée — terminée et publiée. |
-| 19 octobre | Dashboard/Kanban persistants — terminés et validés. |
-| 20 octobre | Intégration, CI et préparation du déploiement — validées le 21. |
-| 21 octobre | Vérifications globales, corrections, documentation et livraison. |
+## Environnement et limites
+- PostgreSQL local 127.0.0.1:15432 ; conserver le volume et les identifiants. Secrets seulement dans .env ignoré.
+- Réseau accordé pour le tour du 23 : accès HTTP local et Git fonctionnels ; API Docker encore refusée. PostgreSQL déjà démarré et sain. Les permissions ne sont pas garanties aux tours suivants.
+- Historique Git local synchronisé avec les commits distants après vérification que tous les fichiers correspondaient ; ne plus traiter df964da comme HEAD courant. Préserver les changements humains avant toute synchronisation.
+- JWT 15 min, pas de refresh token ; limitation des tentatives en mémoire par processus. Limite partagée nécessaire avant plusieurs instances.
+- Compteurs Kanban lus séparément, pas de snapshot transactionnel entre clients ; actualiser après modification externe.
 
 ## Continuité
-Lire cet état, Git et les seuls fichiers concernés. Lots cohérents, tests ciblés puis contrôles globaux aux jalons. Aucun sous-agent, dépendance ou refactoring inutile. Environ 3 commits/session et 21 au total sans quota artificiel. Publier après vérifications essentielles, confirmer le SHA distant, sans force push. Aucun travail après le 21 octobre.
+Lire cet état, Git et les seuls fichiers concernés. Lots cohérents, tests ciblés puis globaux aux jalons ; ne pas répéter des contrôles inchangés. Aucun sous-agent, dépendance, refactoring ou commit cosmétique inutile. Publier seulement après contrôles essentiels, confirmer le SHA distant, sans force push.
 Rapport : fonctionnalités ; commits créés/poussés ; tests ; prochaine étape ; blocages éventuels.

@@ -4,7 +4,7 @@ Suivi personnel des candidatures de stage. Monorepo React TypeScript / NestJS / 
 
 ## État
 
-Socle applicatif, page d'accueil et endpoints de santé disponibles. Authentification JWT validée ; API CRUD des candidatures validée. Interface CRUD, dashboard et Kanban connectés disponibles : voir [PROJECT_STATUS.md](PROJECT_STATUS.md).
+Socle applicatif, page d'accueil et endpoints de santé disponibles. Authentification JWT validée ; API CRUD des candidatures validée. Interface CRUD, dashboard et Kanban connectés disponibles. Voir la [note de livraison et ses validations](docs/DELIVERY.md) et [PROJECT_STATUS.md](PROJECT_STATUS.md) pour la continuité. La CI vérifie 49 tests ; aucun hébergement de production n’est configuré.
 
 ## Démarrage local
 
